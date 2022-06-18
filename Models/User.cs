@@ -1,6 +1,8 @@
-﻿namespace SchoolManagementSystem.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace SchoolManagementSystem.Models
 {
-    public class User
+    public class User : IdentityUser
     {
     }
 }
