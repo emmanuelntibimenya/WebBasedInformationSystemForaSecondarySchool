@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<SchoolManagementSystem.Models.User>
+@inject UserManager<SchoolManagementSystem.Models.User> UserManager
 
 @{
     ViewData["Title"] = "Index";
@@ -22,12 +23,16 @@
             <th>
                 @Html.DisplayNameFor(model => model.PhoneNumber)
             </th>
+            <th>
+                Role
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+            var userRole = await UserManager.GetRolesAsync(item);
+            <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FullName)
             </td>
@@ -36,6 +41,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @userRole.FirstOrDefault()
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

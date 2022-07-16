@@ -1,20 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SchoolManagementSystem.Constants;
+using System.ComponentModel.DataAnnotations;
 
 namespace SchoolManagementSystem.DTOs
 {
     public class NewUser
     {
+        public string? Id { get; set; }
         [Required]
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
         [Required]
-        public string Email { get; set; }
+        public string? Email { get; set; }
         [Required]
-        public string PhoneNumber { get; set; }
-        [Required]
+        public string? PhoneNumber { get; set; }
+        public string? Role { get; set; }
         public string Password { get; set; }
 
         public NewUser()
         {
+            Id = string.Empty;
             FullName = string.Empty;
             Email = string.Empty;
             PhoneNumber = string.Empty;

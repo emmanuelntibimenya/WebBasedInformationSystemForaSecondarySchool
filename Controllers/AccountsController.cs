@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SchoolManagementSystem.Constants;
 using SchoolManagementSystem.Data;
 using SchoolManagementSystem.DTOs;
 using SchoolManagementSystem.Models;
@@ -50,12 +51,16 @@ namespace SchoolManagementSystem.Controllers
                 return NotFound();
             }
 
+            var userRoles = await _userManager.GetRolesAsync(user);
+            ViewBag.UserRole = userRoles.FirstOrDefault();
+
             return View(user);
         }
 
         // GET: User/Create
         public IActionResult Create()
         {
+            ViewBag.Roles = _context.Roles.ToList();
             return View();
         }
 
@@ -64,7 +69,7 @@ namespace SchoolManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FullName,Email,PhoneNumber,Password")] NewUser user)
+        public async Task<IActionResult> Create([Bind("FullName,Email,PhoneNumber,Password,Role")] NewUser user)
         {
             if (ModelState.IsValid)
             {
@@ -77,13 +82,18 @@ namespace SchoolManagementSystem.Controllers
                 await _emailStore.SetEmailAsync(newUser, newUser.Email, CancellationToken.None);
 
                 var result = await _userManager.CreateAsync(newUser, user.Password);
-                if (!result.Succeeded)
+                if (result.Succeeded)
                 {
-                    //bad password
+                    var userRole = await _context.Roles.FirstOrDefaultAsync(x => x.Id == user.Role);
+
+                    await _userManager.AddToRoleAsync(newUser, userRole?.Name);
+                    await _context.SaveChangesAsync();
                 }
-                await _context.SaveChangesAsync();
+
+                
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Roles = _context.Roles.ToList();
             return View(user);
         }
 
@@ -100,7 +110,22 @@ namespace SchoolManagementSystem.Controllers
             {
                 return NotFound();
             }
-            return View(user);
+            
+            ViewBag.Roles = _context.Roles.ToList();
+            
+            var userRoles = await _userManager.GetRolesAsync(user);
+            ViewBag.UserRoles = userRoles;
+
+            NewUser newUser = new NewUser
+            {
+                Id = user.Id,
+                FullName = user?.FullName,
+                Email = user?.Email,
+                PhoneNumber = user?.PhoneNumber,
+                Role = userRoles.FirstOrDefault()
+            };
+
+            return View(newUser);
         }
 
         // POST: User/Edit/5
@@ -108,7 +133,7 @@ namespace SchoolManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,FullName,Email,PhoneNumber")] User user)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,FullName,Email,PhoneNumber,Role")] NewUser user)
         {
             if (id != user.Id)
             {
@@ -126,6 +151,10 @@ namespace SchoolManagementSystem.Controllers
 
                     _context.Users.Update(currentUser);
 
+                    var userRole = await _context.Roles.FirstOrDefaultAsync(x => x.Id == user.Role);
+
+                    await _userManager.AddToRoleAsync(currentUser, userRole?.Name);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -141,6 +170,7 @@ namespace SchoolManagementSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Roles = _context.Roles.ToList();
             return View(user);
         }
 

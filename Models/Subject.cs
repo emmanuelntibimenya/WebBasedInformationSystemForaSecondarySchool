@@ -2,12 +2,7 @@
 {
     public class Subject
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-
-        public Subject()
-        {
-            Title = string.Empty;
-        }
+        public int? Id { get; internal set; }
+        public string? Title { get; set; }
     }
 }

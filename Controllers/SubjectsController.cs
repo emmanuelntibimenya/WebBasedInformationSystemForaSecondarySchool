@@ -22,20 +22,20 @@ namespace SchoolManagementSystem.Controllers
         // GET: Subjects
         public async Task<IActionResult> Index()
         {
-              return _context.Subjects != null ? 
-                          View(await _context.Subjects.ToListAsync()) :
+              return _context.Subject != null ? 
+                          View(await _context.Subject.ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.Subjects'  is null.");
         }
 
         // GET: Subjects/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, object subject)
         {
-            if (id == null || _context.Subjects == null)
+            if (id == null || _context.Subject == null)
             {
                 return NotFound();
             }
 
-            var subject = await _context.Subjects
+            var Subject = await _context.Subject
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (subject == null)
             {
@@ -70,12 +70,12 @@ namespace SchoolManagementSystem.Controllers
         // GET: Subjects/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Subjects == null)
+            if (id == null || _context.Subject == null)
             {
                 return NotFound();
             }
 
-            var subject = await _context.Subjects.FindAsync(id);
+            var subject = await _context.Subject.FindAsync(id);
             if (subject == null)
             {
                 return NotFound();
@@ -118,15 +118,20 @@ namespace SchoolManagementSystem.Controllers
             return View(subject);
         }
 
+        private bool SubjectExists(int? id)
+        {
+            throw new NotImplementedException();
+        }
+
         // GET: Subjects/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Subjects == null)
+            if (id == null || _context.Subject == null)
             {
                 return NotFound();
             }
 
-            var subject = await _context.Subjects
+            var subject = await _context.Subject
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (subject == null)
             {
@@ -141,14 +146,14 @@ namespace SchoolManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Subjects == null)
+            if (_context.Subject == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Subjects'  is null.");
             }
-            var subject = await _context.Subjects.FindAsync(id);
+            var subject = await _context.Subject.FindAsync(id);
             if (subject != null)
             {
-                _context.Subjects.Remove(subject);
+                _context.Subject.Remove(subject);
             }
             
             await _context.SaveChangesAsync();
@@ -157,7 +162,7 @@ namespace SchoolManagementSystem.Controllers
 
         private bool SubjectExists(int id)
         {
-          return (_context.Subjects?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Subject?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

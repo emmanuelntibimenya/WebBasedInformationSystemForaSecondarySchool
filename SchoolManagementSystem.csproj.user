@@ -12,5 +12,6 @@
     <WebStackScaffolding_DbContextTypeFullName>SchoolManagementSystem.Data.ApplicationDbContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
     <WebStackScaffolding_IsViewGenerationSelected>True</WebStackScaffolding_IsViewGenerationSelected>
+    <NameOfLastUsedPublishProfile>C:\MyProjects\SchoolManagementSystem\Properties\PublishProfiles\WebBasedInformationSystemForaSecondarySchool - Web Deploy.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

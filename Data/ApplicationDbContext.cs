@@ -11,10 +11,10 @@ namespace SchoolManagementSystem.Data
         {
         }
 
-        public DbSet<Subject> Subjects { get; set; }
+        public DbSet<Subject> Subject { get; set; }
         public DbSet<Score> Scores { get; set; }
         public DbSet<Result> Results { get; set; }
-        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<Attendance> Attendance { get; set; }
         public DbSet<LearnerProfile> LearnerProfile { get; set; }
     }
 }
