@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Q1/iMUQYPky4IGtwIH6FyYA0wvMUSoH9yR0VrRgH7r4=",
+  "Hash": "ONLNKcYw0SGp5CDuqDO0DYD5XKmAjtyrEV7Sd5b4bmg=",
   "Source": "SchoolManagementSystem",
   "BasePath": "_content/SchoolManagementSystem",
   "Mode": "Default",
@@ -83,6 +83,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\MyProjects\\SchoolManagementSystem\\wwwroot\\images\\picture.jpg",
+      "SourceId": "SchoolManagementSystem",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\MyProjects\\SchoolManagementSystem\\wwwroot\\",
+      "BasePath": "_content/SchoolManagementSystem",
+      "RelativePath": "images/picture.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\picture.jpg"
     },
     {
       "Identity": "C:\\MyProjects\\SchoolManagementSystem\\wwwroot\\js\\site.js",

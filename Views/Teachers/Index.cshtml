@@ -1,0 +1,62 @@
+﻿@model IEnumerable<SchoolManagementSystem.Models.User>
+
+@{
+    ViewData["Title"] = "Students";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Students</h1>
+
+<p>
+    <div style="max-width:200px;">
+        <form>
+            <select name="subject" class="form-control">
+                <option value="">-choose your Subject-</option>
+                @{
+                    foreach(var subject in ViewBag.Subjects)
+                    {
+                        <option value="@subject.Id">@subject.Title</option>
+                    }
+                }
+            </select>
+            <a class="nav-link text-dark text-success" target="_blank" asp-controller="Subjects" asp-action="Create">+</a>
+        </form>
+    </div>
+    <div class="clearfix"></div>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Mark Attendance</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Update Result</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Update Learner Profile</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

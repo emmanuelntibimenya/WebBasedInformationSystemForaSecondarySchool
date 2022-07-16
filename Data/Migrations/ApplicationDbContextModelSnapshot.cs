@@ -17,7 +17,7 @@ namespace SchoolManagementSystem.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -179,7 +179,7 @@ namespace SchoolManagementSystem.Data.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Attendances");
+                    b.ToTable("Attendance");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Models.LearnerProfile", b =>
@@ -237,11 +237,11 @@ namespace SchoolManagementSystem.Data.Migrations
                     b.Property<int?>("ResultId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ScoresId")
+                        .HasColumnType("int");
+
                     b.Property<string>("StudentId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
 
                     b.Property<double>("SubjectScore")
                         .HasColumnType("float");
@@ -250,28 +250,32 @@ namespace SchoolManagementSystem.Data.Migrations
 
                     b.HasIndex("ResultId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("ScoresId");
 
-                    b.HasIndex("SubjectId");
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Scores");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Models.Subject", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"), 1L, 1);
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subjects");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Subject");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Models.User", b =>
@@ -434,24 +438,36 @@ namespace SchoolManagementSystem.Data.Migrations
                         .WithMany("Scores")
                         .HasForeignKey("ResultId");
 
+                    b.HasOne("SchoolManagementSystem.Models.Subject", "Scores")
+                        .WithMany()
+                        .HasForeignKey("ScoresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SchoolManagementSystem.Models.User", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId");
 
-                    b.HasOne("SchoolManagementSystem.Models.Subject", "Subject")
-                        .WithMany()
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Scores");
 
                     b.Navigation("Student");
+                });
 
-                    b.Navigation("Subject");
+            modelBuilder.Entity("SchoolManagementSystem.Models.Subject", b =>
+                {
+                    b.HasOne("SchoolManagementSystem.Models.User", null)
+                        .WithMany("Subject")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Models.Result", b =>
                 {
                     b.Navigation("Scores");
+                });
+
+            modelBuilder.Entity("SchoolManagementSystem.Models.User", b =>
+                {
+                    b.Navigation("Subject");
                 });
 #pragma warning restore 612, 618
         }

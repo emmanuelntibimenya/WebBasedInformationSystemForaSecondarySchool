@@ -10,9 +10,9 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="background-color:forestgreen !important;">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">WebBasedInformationSystemForaSecondarySchool</a>
+                <a class="navbar-brand" style="color: yellow !important;" asp-area="" asp-page="/Index">WebBasedInformationSystemForaSecondarySchool</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -20,22 +20,22 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">HOME</a>
+                            <a class="nav-link" style="color: #fff !important;" asp-controller="Accounts" asp-action="Index">ACCOUNTS</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">PRINCIPAL</a>
+                            <a class="nav-link" style="color: #fff !important;" asp-area="" asp-page="/Index">PRINCIPAL</a>
                         </li>
                          <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">SECRETARY</a>
+                            <a class="nav-link" style="color: #fff !important;" asp-area="" asp-page="/Index">SECRETARY</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">TEACHERS</a>
+                            <a class="nav-link" style="color: #fff !important;" asp-controller="Teachers" asp-action="Index">TEACHERS</a>
                         </li>
                          <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">STUDENTS</a>
+                            <a  style="color: #fff !important;"class="nav-link text-dark" asp-area="" asp-page="/Index">STUDENTS</a>
                         </li>
                          <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">PARENTS</a>
+                            <a  style="color: #fff !important;"class="nav-link text-dark" asp-area="" asp-page="/Index">PARENTS</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />

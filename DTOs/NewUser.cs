@@ -14,7 +14,7 @@ namespace SchoolManagementSystem.DTOs
         public string? PhoneNumber { get; set; }
         public string? Role { get; set; }
         public string Password { get; set; }
-
+        public List<int> Subjects { get; set; }
         public NewUser()
         {
             Id = string.Empty;
@@ -22,6 +22,7 @@ namespace SchoolManagementSystem.DTOs
             Email = string.Empty;
             PhoneNumber = string.Empty;
             Password = string.Empty;
+            Subjects = new List<int>();
         }
     }
 }

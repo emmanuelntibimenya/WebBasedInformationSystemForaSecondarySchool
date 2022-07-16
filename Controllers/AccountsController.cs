@@ -61,6 +61,7 @@ namespace SchoolManagementSystem.Controllers
         public IActionResult Create()
         {
             ViewBag.Roles = _context.Roles.ToList();
+            ViewBag.Subjects = _context.Subject.ToList();
             return View();
         }
 
@@ -69,7 +70,7 @@ namespace SchoolManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FullName,Email,PhoneNumber,Password,Role")] NewUser user)
+        public async Task<IActionResult> Create([Bind("FullName,Email,PhoneNumber,Password,Role,Subjects")] NewUser user)
         {
             if (ModelState.IsValid)
             {
@@ -78,6 +79,9 @@ namespace SchoolManagementSystem.Controllers
                 newUser.FullName = user.FullName;
                 newUser.Email = user.Email;
                 newUser.PhoneNumber = user.PhoneNumber;
+                newUser.EmailConfirmed = true;
+                newUser.Subjects = await _context.Subject.Where(x => user.Subjects.Contains(x.Id)).ToListAsync();
+
                 await _userStore.SetUserNameAsync(newUser, newUser.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(newUser, newUser.Email, CancellationToken.None);
 
@@ -112,7 +116,8 @@ namespace SchoolManagementSystem.Controllers
             }
             
             ViewBag.Roles = _context.Roles.ToList();
-            
+            ViewBag.Subjects = _context.Subject.ToList();
+
             var userRoles = await _userManager.GetRolesAsync(user);
             ViewBag.UserRoles = userRoles;
 
@@ -133,7 +138,7 @@ namespace SchoolManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,FullName,Email,PhoneNumber,Role")] NewUser user)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,FullName,Email,PhoneNumber,Role,Subjects")] NewUser user)
         {
             if (id != user.Id)
             {
@@ -147,12 +152,20 @@ namespace SchoolManagementSystem.Controllers
                     var currentUser = await _context.Users.FindAsync(user.Id);
                     currentUser!.FullName = user.FullName;
                     currentUser.Email = user.Email;
+                    currentUser.UserName = user.Email;
                     currentUser.PhoneNumber = user.PhoneNumber;
-
+                    currentUser.Subjects = await _context.Subject.Where(x => user.Subjects.Contains(x.Id)).ToListAsync();
                     _context.Users.Update(currentUser);
 
                     var userRole = await _context.Roles.FirstOrDefaultAsync(x => x.Id == user.Role);
 
+                    await _userManager.UpdateAsync(currentUser);
+                    var oldRole = await _userManager.GetRolesAsync(currentUser);
+                    if(oldRole != null && oldRole.Any())
+                    {
+                        await _userManager.RemoveFromRoleAsync(currentUser, oldRole.First());
+                    }
+                    
                     await _userManager.AddToRoleAsync(currentUser, userRole?.Name);
 
                     await _context.SaveChangesAsync();

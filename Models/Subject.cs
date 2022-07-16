@@ -2,7 +2,7 @@
 {
     public class Subject
     {
-        public int? Id { get; internal set; }
+        public int Id { get; internal set; }
         public string? Title { get; set; }
     }
 }
