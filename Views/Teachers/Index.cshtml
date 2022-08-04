@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SchoolManagementSystem.Models.User>
+﻿@model IEnumerable<SchoolManagementSystem.Models.UserSubject>
 
 @{
     ViewData["Title"] = "Students";
@@ -10,12 +10,12 @@
 <p>
     <div style="max-width:200px;">
         <form>
-            <select name="subject" class="form-control">
+            <select id="subject" name="subject" class="form-control">
                 <option value="">-choose your Subject-</option>
                 @{
                     foreach(var subject in ViewBag.Subjects)
                     {
-                        <option value="@subject.Id">@subject.Title</option>
+                                        <option value="@subject.Id">@subject.Title</option>
                     }
                 }
             </select>
@@ -28,13 +28,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FullName)
+                @Html.DisplayNameFor(model => model.User.FullName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.User.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
+                @Html.DisplayNameFor(model => model.User.PhoneNumber)
             </th>
             <th></th>
         </tr>
@@ -43,20 +43,32 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FullName)
+                @Html.DisplayFor(modelItem => item.User.FullName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Email)
+                @Html.DisplayFor(modelItem => item.User.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                @Html.DisplayFor(modelItem => item.User.PhoneNumber)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Mark Attendance</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Update Result</a> |
+                <a asp-action="MarkAttendance" asp-route-id="@item.Id">Mark Attendance</a> |
+                <a asp-action="MarkAttendance" asp-route-id="@item.Id">Update Result</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Update Learner Profile</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+@section scripts {
+     <script type="text/javascript">
+        $("#subject").on('change', function() {
+            var url = window.location.href.split('?')[0] + "?subjectId=" + $(this).children("option:selected").val();
+            window.location.href = url;
+        });
+
+        var urlParams = new URLSearchParams(window.location.search);
+        var selectedSubject = urlParams.get('subjectId');
+        if (selectedSubject != "") $("#subject").val(selectedSubject);
+     </script>
+}

@@ -16,5 +16,7 @@ namespace SchoolManagementSystem.Data
         public DbSet<Result> Results { get; set; }
         public DbSet<Attendance> Attendance { get; set; }
         public DbSet<LearnerProfile> LearnerProfile { get; set; }
+
+        public DbSet<UserSubject> UserSubjects { get; set; }
     }
 }

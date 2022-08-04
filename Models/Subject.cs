@@ -4,5 +4,6 @@
     {
         public int Id { get; internal set; }
         public string? Title { get; set; }
+        public List<User> Students { get; set; }
     }
 }

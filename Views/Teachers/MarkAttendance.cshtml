@@ -1,0 +1,49 @@
+﻿@model SchoolManagementSystem.Models.UserSubject
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Student Record</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="MarkAttendance">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="mb-3"><b>User:</b> @Model.User.FullName</div>
+            <div class="mb-3"><b>Subject:</b> @Model.Subject.Title</div>
+            <div class="form-group mb-3">
+                <div class="form-check form-switch">
+                  <input asp-for="Attended" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked=@Model.Attended>
+                  <label asp-for="Attended" class="form-check-label"></label>
+                </div>
+                <span asp-validation-for="Attended" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Score" class="control-label"></label>
+                <input asp-for="Score" type="number" value="@Model.Score" class="form-control" />
+                <span asp-validation-for="Score" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="LearnerProfile" class="control-label"></label>
+                <textarea asp-for="LearnerProfile" class="form-control" >@Model.LearnerProfile</textarea>
+                <span asp-validation-for="LearnerProfile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -6,6 +6,6 @@ namespace SchoolManagementSystem.Models
     {
         public string? FullName { get; set; }
         
-        public List<Subject>? Subjects { get; set; }
+        public List<UserSubject>? Subjects { get; set; }
     }
 }

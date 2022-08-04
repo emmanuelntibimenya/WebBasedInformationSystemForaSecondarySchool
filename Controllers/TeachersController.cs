@@ -25,21 +25,21 @@ namespace SchoolManagementSystem.Controllers
         }
 
         // GET: Teachers
-        public async Task<IActionResult> Index()
+        [Authorize(Roles = "Teacher,Secretary,Principal")]
+        public async Task<IActionResult> Index(int subjectId)
         {
-            var teacher = await _userManager.GetUserAsync(HttpContext.User);
-            Subject? teacherSubject = teacher.Subjects?.FirstOrDefault();
+            Subject? subject = await _context.Subject.FindAsync(subjectId);
             var students = await _userManager.GetUsersInRoleAsync("Student");
-            students = teacherSubject == null ? new List<User>() : students.Where(x => x.Subjects != null && x.Subjects.Contains(teacherSubject)).ToList();
+            var studentIds = students.Select(x => x.Id).ToList();
+            var subjectUsers = subject == null ? new List<UserSubject>() : await _context.UserSubjects.Include(a => a.User).Where(x => x.SubjectId == subjectId && studentIds.Contains(x.UserId)).ToListAsync();
 
             ViewBag.Subjects = await _context.Subject.ToListAsync();
 
-            return _context.Users != null ? 
-                        View(students) :
-                        Problem("Entity set 'ApplicationDbContext.UserRoles'  is null.");
+            return View(subjectUsers);
         }
 
         // GET: Teachers/Details/5
+        [Authorize(Roles = "Teacher,Secretary,Principal")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Subject == null)
@@ -58,6 +58,7 @@ namespace SchoolManagementSystem.Controllers
         }
 
         // GET: Teachers/Create
+        [Authorize(Roles = "Teacher,Secretary,Principal")]
         public IActionResult Create()
         {
             return View();
@@ -68,6 +69,7 @@ namespace SchoolManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher,Secretary,Principal")]
         public async Task<IActionResult> Create([Bind("Id,Title")] Subject subject)
         {
             if (ModelState.IsValid)
@@ -80,6 +82,7 @@ namespace SchoolManagementSystem.Controllers
         }
 
         // GET: Teachers/Edit/5
+        [Authorize(Roles = "Teacher,Secretary,Principal")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Subject == null)
@@ -100,6 +103,7 @@ namespace SchoolManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher,Secretary,Principal")]
         public async Task<IActionResult> Edit(int? id, [Bind("Id,Title")] Subject subject)
         {
             if (id != subject.Id)
@@ -130,7 +134,30 @@ namespace SchoolManagementSystem.Controllers
             return View(subject);
         }
 
+        [HttpGet("MarkAttendance")]
+        public async Task<IActionResult> MarkAttendance(int id)
+        {
+            UserSubject? userSubject = await _context.UserSubjects.Include(x => x.User).Include(x => x.Subject).FirstOrDefaultAsync(x => x.Id == id);
+            return View(userSubject);
+        }
+
+        [HttpPost("MarkAttendance")]
+        public async Task<IActionResult> MarkAttendance(int id, [Bind("UserId,SubjectId,Attended,Score,LearnerProfile")] UserSubject userSubject)
+        {
+            UserSubject? userSubj = await _context.UserSubjects.Include(x => x.User).Include(x => x.Subject).FirstOrDefaultAsync(x => x.Id == id);
+            if (userSubj != null)
+            {
+                userSubj.Attended = userSubject.Attended;
+                userSubj.Score = userSubject.Score;
+                userSubj.LearnerProfile = userSubject.LearnerProfile;
+            }
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(MarkAttendance), new { id = id });
+        }
+
         // GET: Teachers/Delete/5
+        [Authorize(Roles = "Teacher,Secretary,Principal")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Subject == null)
@@ -151,6 +178,7 @@ namespace SchoolManagementSystem.Controllers
         // POST: Teachers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher,Secretary,Principal")]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             if (_context.Subject == null)

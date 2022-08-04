@@ -80,8 +80,8 @@ namespace SchoolManagementSystem.Controllers
                 newUser.Email = user.Email;
                 newUser.PhoneNumber = user.PhoneNumber;
                 newUser.EmailConfirmed = true;
-                newUser.Subjects = await _context.Subject.Where(x => user.Subjects.Contains(x.Id)).ToListAsync();
 
+                
                 await _userStore.SetUserNameAsync(newUser, newUser.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(newUser, newUser.Email, CancellationToken.None);
 
@@ -91,7 +91,21 @@ namespace SchoolManagementSystem.Controllers
                     var userRole = await _context.Roles.FirstOrDefaultAsync(x => x.Id == user.Role);
 
                     await _userManager.AddToRoleAsync(newUser, userRole?.Name);
+
+                    List<UserSubject> subjects = new List<UserSubject>();
+
+                    foreach (var subjectId in user.Subjects)
+                    {
+                        subjects.Add(new UserSubject
+                        {
+                            SubjectId = subjectId,
+                            UserId = newUser.Id,
+                        });
+                    }
+                    await _context.UserSubjects.AddRangeAsync(subjects);
+
                     await _context.SaveChangesAsync();
+
                 }
 
                 
@@ -154,8 +168,20 @@ namespace SchoolManagementSystem.Controllers
                     currentUser.Email = user.Email;
                     currentUser.UserName = user.Email;
                     currentUser.PhoneNumber = user.PhoneNumber;
-                    currentUser.Subjects = await _context.Subject.Where(x => user.Subjects.Contains(x.Id)).ToListAsync();
                     _context.Users.Update(currentUser);
+
+                    var userSubjects = await _context.UserSubjects.Where(x => x.UserId == currentUser.Id).ToListAsync();
+                    _context.UserSubjects.RemoveRange(userSubjects);
+                    List<UserSubject> subjects = new List<UserSubject>();
+                    foreach (var subjectId in user.Subjects)
+                    {
+                        subjects.Add(new UserSubject
+                        {
+                            SubjectId = subjectId,
+                            UserId = currentUser.Id,
+                        });
+                    }
+                    await _context.UserSubjects.AddRangeAsync(subjects);
 
                     var userRole = await _context.Roles.FirstOrDefaultAsync(x => x.Id == user.Role);
 
@@ -222,6 +248,7 @@ namespace SchoolManagementSystem.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+
         }
 
         private bool UserExists(string id)

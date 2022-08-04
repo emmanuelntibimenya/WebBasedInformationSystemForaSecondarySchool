@@ -21,6 +21,7 @@ namespace SchoolManagementSystem.DTOs
             FullName = string.Empty;
             Email = string.Empty;
             PhoneNumber = string.Empty;
+            Role = string.Empty;
             Password = string.Empty;
             Subjects = new List<int>();
         }
