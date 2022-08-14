@@ -35,24 +35,39 @@
                     @{
                         foreach(var role in ViewBag.Roles)
                         {
-                                <option value="@role.Id" selected="@{ViewBag.UserRoles.Contains(@role.Name);}">@role.Name</option>
+                                    <option value="@role.Id" selected="@{ViewBag.UserRoles.Contains(@role.Name);}">@role.Name</option>
                         }
                     }
                 </select>
                 <span for="Role" class="text-danger"></span>
             </div>
-            <div class="form-group mt-3">
-                <label for="Subjects" class="control-label">Subject</label>
-                @{
-                    foreach(var subject in ViewBag.Subjects)
-                    {
-                        <div class="form-check ms-3">
-                            <input name="Subjects[]" class="form-check-input" type="checkbox" value="@subject.Id" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">@subject.Title</label>
-                        </div>
+            <div id="subjectParent" class="d-none">
+                <div class="form-group mt-3">
+                    <label for="Subjects" class="control-label">Subject</label>
+                    @{
+                        foreach(var subject in ViewBag.Subjects)
+                        {
+                                <div class="form-check ms-3">
+                                    <input name="Subjects[]" class="form-check-input" type="checkbox" value="@subject.Id" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">@subject.Title</label>
+                                </div>
+                        }
                     }
-                }
-                <span for="Role" class="text-danger"></span>
+                    <span for="Role" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3 mb-3">
+                    <label for="Parents" class="control-label">Parent</label>
+                    <select name="Parent" class="form-control">
+                        <option value="">-select parent-</option>
+                    @{
+                        foreach(var parent in ViewBag.Parents)
+                        {
+                            <option value="@parent.Id">@parent.FullName</option>
+                        }
+                    }
+                    </select>
+                    <span for="Parents" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group mt-2">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -67,4 +82,18 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function HideDisplaySubjectParent(){
+            let selectedRole = $('#role').children("option:selected").text();
+            if (selectedRole == "Student") {
+                $('#subjectParent').removeClass('d-none');
+            }
+        }
+
+        $('#role').on('change', function() {
+            HideDisplaySubjectParent();
+        })
+
+        HideDisplaySubjectParent();
+    </script>
 }

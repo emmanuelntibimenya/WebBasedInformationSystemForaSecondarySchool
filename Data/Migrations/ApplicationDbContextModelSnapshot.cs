@@ -17,7 +17,7 @@ namespace SchoolManagementSystem.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "6.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -159,6 +159,26 @@ namespace SchoolManagementSystem.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SchoolManagementSystem.Models.AdministrationTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Task")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdministrationTasks");
+                });
+
             modelBuilder.Entity("SchoolManagementSystem.Models.Attendance", b =>
                 {
                     b.Property<int>("Id")
@@ -202,6 +222,38 @@ namespace SchoolManagementSystem.Data.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("LearnerProfile");
+                });
+
+            modelBuilder.Entity("SchoolManagementSystem.Models.MeetingRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("MeetingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ParentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("MeetingRequests");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Models.Result", b =>
@@ -309,6 +361,9 @@ namespace SchoolManagementSystem.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("ParentId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -340,6 +395,8 @@ namespace SchoolManagementSystem.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("SubjectId");
 
@@ -457,6 +514,25 @@ namespace SchoolManagementSystem.Data.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("SchoolManagementSystem.Models.MeetingRequest", b =>
+                {
+                    b.HasOne("SchoolManagementSystem.Models.User", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SchoolManagementSystem.Models.User", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("SchoolManagementSystem.Models.Result", b =>
                 {
                     b.HasOne("SchoolManagementSystem.Models.User", "Student")
@@ -489,9 +565,15 @@ namespace SchoolManagementSystem.Data.Migrations
 
             modelBuilder.Entity("SchoolManagementSystem.Models.User", b =>
                 {
+                    b.HasOne("SchoolManagementSystem.Models.User", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
                     b.HasOne("SchoolManagementSystem.Models.Subject", null)
                         .WithMany("Students")
                         .HasForeignKey("SubjectId");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Models.UserSubject", b =>
@@ -525,6 +607,8 @@ namespace SchoolManagementSystem.Data.Migrations
 
             modelBuilder.Entity("SchoolManagementSystem.Models.User", b =>
                 {
+                    b.Navigation("Children");
+
                     b.Navigation("Subjects");
                 });
 #pragma warning restore 612, 618

@@ -3,4 +3,7 @@
   <parameter name="IIS Web Application Name" description="" value="WebBasedInformationSystemForaSecondarySchool" tags="IisApp">
     <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\MyProjects\\SchoolManagementSystem\\obj\\Release\\net6\.0\\PubTmp\\Out\\$" />
   </parameter>
+  <parameter name="SchoolManagementSystem.Data.ApplicationDbContext" description="" value="Server=tcp:sms1.database.windows.net,1433;Initial Catalog=SchoolManagementSystemDB;Persist Security Info=False;User ID=emmanuel;Password=Dublin@2022;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" tags="dbfullsql">
+    <parameterEntry kind="ProviderPath" scope="dbfullsql" match="^C:\\MyProjects\\SchoolManagementSystem\\obj\\Release\\net6\.0\\PubTmp\\EFSQLScripts\\SchoolManagementSystem\.Data\.ApplicationDbContext\.sql$" />
+  </parameter>
 </parameters>

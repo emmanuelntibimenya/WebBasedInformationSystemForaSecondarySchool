@@ -1,0 +1,61 @@
+﻿@model IEnumerable<SchoolManagementSystem.Models.UserSubject>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h3>
+    @ViewBag.User's Results and Learner profile
+</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Subject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Attended)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Score)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LearnerProfile)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject.Title)
+            </td>
+            <td>
+                @if (item.Attended)
+                {
+                    <i class="fa-solid fa-check text-success"></i>
+                }
+                else
+                {
+                    <i class="fa-solid fa-xmark text-danger"></i>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Score)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LearnerProfile)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+@section scripts {
+     <script type="text/javascript">
+         
+        $(document).ready(function () {
+            $('.table').DataTable();
+        });
+     </script>
+}

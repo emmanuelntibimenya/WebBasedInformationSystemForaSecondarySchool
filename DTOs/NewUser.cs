@@ -8,13 +8,14 @@ namespace SchoolManagementSystem.DTOs
         public string? Id { get; set; }
         [Required]
         public string? FullName { get; set; }
-        [Required]
+        [EmailAddress]
         public string? Email { get; set; }
         [Required]
         public string? PhoneNumber { get; set; }
         public string? Role { get; set; }
         public string Password { get; set; }
         public List<int> Subjects { get; set; }
+        public string? Parent { get; set; }
         public NewUser()
         {
             Id = string.Empty;

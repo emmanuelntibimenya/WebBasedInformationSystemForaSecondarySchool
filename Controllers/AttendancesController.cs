@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Data;
 using SchoolManagementSystem.Models;
 
 namespace SchoolManagementSystem.Controllers
 {
+    [Authorize(Roles = "Teacher,Principal")]
     public class AttendancesController:Controller
     {
         private readonly ApplicationDbContext _context;
        
-
         public AttendancesController(ApplicationDbContext context)
         {
             _context = context;

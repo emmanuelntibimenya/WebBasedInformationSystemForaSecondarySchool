@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,6 +14,7 @@ using SchoolManagementSystem.Models;
 
 namespace SchoolManagementSystem.Controllers
 {
+    [Authorize(Roles = "Principal")]
     public class AccountsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -58,10 +60,11 @@ namespace SchoolManagementSystem.Controllers
         }
 
         // GET: User/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewBag.Roles = _context.Roles.ToList();
             ViewBag.Subjects = _context.Subject.ToList();
+            ViewBag.Parents = await _userManager.GetUsersInRoleAsync("Parent");
             return View();
         }
 
@@ -70,7 +73,7 @@ namespace SchoolManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FullName,Email,PhoneNumber,Password,Role,Subjects")] NewUser user)
+        public async Task<IActionResult> Create([Bind("FullName,Email,PhoneNumber,Password,Role,Subjects,Parent")] NewUser user)
         {
             if (ModelState.IsValid)
             {
@@ -80,7 +83,7 @@ namespace SchoolManagementSystem.Controllers
                 newUser.Email = user.Email;
                 newUser.PhoneNumber = user.PhoneNumber;
                 newUser.EmailConfirmed = true;
-
+                newUser.ParentId = !string.IsNullOrEmpty(user.Parent) ? user.Parent : null;
                 
                 await _userStore.SetUserNameAsync(newUser, newUser.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(newUser, newUser.Email, CancellationToken.None);
@@ -100,6 +103,7 @@ namespace SchoolManagementSystem.Controllers
                         {
                             SubjectId = subjectId,
                             UserId = newUser.Id,
+                            LearnerProfile = String.Empty
                         });
                     }
                     await _context.UserSubjects.AddRangeAsync(subjects);
@@ -131,6 +135,7 @@ namespace SchoolManagementSystem.Controllers
             
             ViewBag.Roles = _context.Roles.ToList();
             ViewBag.Subjects = _context.Subject.ToList();
+            ViewBag.Parents = await _userManager.GetUsersInRoleAsync("Parent");
 
             var userRoles = await _userManager.GetRolesAsync(user);
             ViewBag.UserRoles = userRoles;
@@ -141,7 +146,8 @@ namespace SchoolManagementSystem.Controllers
                 FullName = user?.FullName,
                 Email = user?.Email,
                 PhoneNumber = user?.PhoneNumber,
-                Role = userRoles.FirstOrDefault()
+                Role = userRoles.FirstOrDefault(),
+                Parent = user?.ParentId
             };
 
             return View(newUser);
@@ -152,7 +158,7 @@ namespace SchoolManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,FullName,Email,PhoneNumber,Role,Subjects")] NewUser user)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,FullName,Email,PhoneNumber,Role,Subjects,Parent")] NewUser user)
         {
             if (id != user.Id)
             {
@@ -170,29 +176,39 @@ namespace SchoolManagementSystem.Controllers
                     currentUser.PhoneNumber = user.PhoneNumber;
                     _context.Users.Update(currentUser);
 
-                    var userSubjects = await _context.UserSubjects.Where(x => x.UserId == currentUser.Id).ToListAsync();
-                    _context.UserSubjects.RemoveRange(userSubjects);
-                    List<UserSubject> subjects = new List<UserSubject>();
-                    foreach (var subjectId in user.Subjects)
-                    {
-                        subjects.Add(new UserSubject
-                        {
-                            SubjectId = subjectId,
-                            UserId = currentUser.Id,
-                        });
-                    }
-                    await _context.UserSubjects.AddRangeAsync(subjects);
-
                     var userRole = await _context.Roles.FirstOrDefaultAsync(x => x.Id == user.Role);
 
                     await _userManager.UpdateAsync(currentUser);
                     var oldRole = await _userManager.GetRolesAsync(currentUser);
-                    if(oldRole != null && oldRole.Any())
+                    if (oldRole != null && oldRole.Any())
                     {
                         await _userManager.RemoveFromRoleAsync(currentUser, oldRole.First());
                     }
-                    
+
                     await _userManager.AddToRoleAsync(currentUser, userRole?.Name);
+
+                    if(userRole!.Name == "Student")
+                    {
+                        var userSubjects = await _context.UserSubjects.Where(x => x.UserId == currentUser.Id).ToListAsync();
+                        List<UserSubject> subjects = new List<UserSubject>();
+                        foreach (var subjectId in user.Subjects)
+                        {
+                            if (!userSubjects.Any(x => x.SubjectId == subjectId))
+                            {
+                                subjects.Add(new UserSubject
+                                {
+                                    SubjectId = subjectId,
+                                    UserId = currentUser.Id,
+                                    LearnerProfile = String.Empty
+                                });
+                            }
+                        }
+                        await _context.UserSubjects.AddRangeAsync(subjects);
+
+                        currentUser.ParentId = !string.IsNullOrEmpty(user.Parent) ? user.Parent : null;
+                        _context.Users.Update(currentUser);
+                    }
+                    
 
                     await _context.SaveChangesAsync();
                 }
