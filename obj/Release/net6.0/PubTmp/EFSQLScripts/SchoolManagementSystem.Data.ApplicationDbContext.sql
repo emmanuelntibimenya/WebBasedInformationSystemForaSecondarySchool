@@ -155,7 +155,7 @@ GO
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'00000000000000_CreateIdentitySchema')
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'00000000000000_CreateIdentitySchema', N'6.0.7');
+    VALUES (N'00000000000000_CreateIdentitySchema', N'6.0.8');
 END;
 GO
 
@@ -255,7 +255,7 @@ GO
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220618144150_Initial Migration')
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20220618144150_Initial Migration', N'6.0.7');
+    VALUES (N'20220618144150_Initial Migration', N'6.0.8');
 END;
 GO
 
@@ -268,7 +268,7 @@ GO
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220622182352_LearnerProfile')
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20220622182352_LearnerProfile', N'6.0.7');
+    VALUES (N'20220622182352_LearnerProfile', N'6.0.8');
 END;
 GO
 
@@ -299,7 +299,7 @@ GO
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220622191316_LearnerProfiles')
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20220622191316_LearnerProfiles', N'6.0.7');
+    VALUES (N'20220622191316_LearnerProfiles', N'6.0.8');
 END;
 GO
 
@@ -318,7 +318,7 @@ GO
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220622200625_FullName')
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20220622200625_FullName', N'6.0.7');
+    VALUES (N'20220622200625_FullName', N'6.0.8');
 END;
 GO
 
@@ -457,7 +457,7 @@ GO
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220716135144_UserSubject')
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20220716135144_UserSubject', N'6.0.7');
+    VALUES (N'20220716135144_UserSubject', N'6.0.8');
 END;
 GO
 
@@ -512,7 +512,7 @@ GO
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220716144459_UserSubjects')
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20220716144459_UserSubjects', N'6.0.7');
+    VALUES (N'20220716144459_UserSubjects', N'6.0.8');
 END;
 GO
 
@@ -592,7 +592,7 @@ GO
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220804185956_UserSubjectss')
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20220804185956_UserSubjectss', N'6.0.7');
+    VALUES (N'20220804185956_UserSubjectss', N'6.0.8');
 END;
 GO
 
@@ -617,7 +617,7 @@ GO
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220804193016_UserSubjectAttendanceScore')
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20220804193016_UserSubjectAttendanceScore', N'6.0.7');
+    VALUES (N'20220804193016_UserSubjectAttendanceScore', N'6.0.8');
 END;
 GO
 
@@ -636,7 +636,126 @@ GO
 IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220804203153_learnerProfiless')
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20220804203153_learnerProfiless', N'6.0.7');
+    VALUES (N'20220804203153_learnerProfiless', N'6.0.8');
+END;
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220810190346_StudentParent')
+BEGIN
+    ALTER TABLE [AspNetUsers] ADD [ParentId] nvarchar(450) NULL;
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220810190346_StudentParent')
+BEGIN
+    CREATE INDEX [IX_AspNetUsers_ParentId] ON [AspNetUsers] ([ParentId]);
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220810190346_StudentParent')
+BEGIN
+    ALTER TABLE [AspNetUsers] ADD CONSTRAINT [FK_AspNetUsers_AspNetUsers_ParentId] FOREIGN KEY ([ParentId]) REFERENCES [AspNetUsers] ([Id]);
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220810190346_StudentParent')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20220810190346_StudentParent', N'6.0.8');
+END;
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220814124151_MeetingRequest')
+BEGIN
+    CREATE TABLE [MeetingRequests] (
+        [Id] int NOT NULL IDENTITY,
+        [ParentId] nvarchar(450) NOT NULL,
+        [StudentId] nvarchar(450) NOT NULL,
+        [MeetingDate] datetime2 NOT NULL,
+        [Note] nvarchar(255) NOT NULL,
+        CONSTRAINT [PK_MeetingRequests] PRIMARY KEY ([Id]),
+        CONSTRAINT [FK_MeetingRequests_AspNetUsers_ParentId] FOREIGN KEY ([ParentId]) REFERENCES [AspNetUsers] ([Id]),
+        CONSTRAINT [FK_MeetingRequests_AspNetUsers_StudentId] FOREIGN KEY ([StudentId]) REFERENCES [AspNetUsers] ([Id])
+    );
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220814124151_MeetingRequest')
+BEGIN
+    CREATE INDEX [IX_MeetingRequests_ParentId] ON [MeetingRequests] ([ParentId]);
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220814124151_MeetingRequest')
+BEGIN
+    CREATE INDEX [IX_MeetingRequests_StudentId] ON [MeetingRequests] ([StudentId]);
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220814124151_MeetingRequest')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20220814124151_MeetingRequest', N'6.0.8');
+END;
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220814160828_AdministrationTask')
+BEGIN
+    CREATE TABLE [AdministrationTasks] (
+        [Id] int NOT NULL IDENTITY,
+        [Time] datetime2 NOT NULL,
+        [Task] nvarchar(255) NOT NULL,
+        CONSTRAINT [PK_AdministrationTasks] PRIMARY KEY ([Id])
+    );
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220814160828_AdministrationTask')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20220814160828_AdministrationTask', N'6.0.8');
+END;
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220818195000_PrincipalDiary')
+BEGIN
+    CREATE TABLE [Diaries] (
+        [Id] int NOT NULL IDENTITY,
+        [Time] datetime2 NOT NULL,
+        [Note] nvarchar(max) NOT NULL,
+        CONSTRAINT [PK_Diaries] PRIMARY KEY ([Id])
+    );
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20220818195000_PrincipalDiary')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20220818195000_PrincipalDiary', N'6.0.8');
 END;
 GO
 

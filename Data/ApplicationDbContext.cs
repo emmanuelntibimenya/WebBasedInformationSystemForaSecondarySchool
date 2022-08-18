@@ -19,5 +19,6 @@ namespace SchoolManagementSystem.Data
         public DbSet<UserSubject> UserSubjects { get; set; }
         public DbSet<MeetingRequest> MeetingRequests { get; set; }
         public DbSet<AdministrationTask> AdministrationTasks { get; set; }
+        public DbSet<Diary> Diaries { get; set; }
     }
 }

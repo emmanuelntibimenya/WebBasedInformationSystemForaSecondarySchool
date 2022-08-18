@@ -28,9 +28,20 @@ namespace SchoolManagementSystem.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            ViewBag.User = user.FullName;
-            var userSubjects = await _context.UserSubjects.Where(x => x.UserId == user!.Id).Include(u => u.Subject).ToListAsync();
-            return View(userSubjects);
+            bool isPrincipal = await _userManager.IsInRoleAsync(user, "Principal");
+            List<UserSubject> subjects = new List<UserSubject>();
+            if (isPrincipal)
+            {
+                ViewBag.Heading = string.Empty;
+                subjects = await _context.UserSubjects.Include(u => u.User).Include(u => u.Subject).ToListAsync();
+            }
+            else
+            {
+                ViewBag.Heading = $"{user.FullName}'s Results and Learner profile";
+                subjects = await _context.UserSubjects.Where(x => x.UserId == user!.Id).Include(u => u.User).Include(u => u.Subject).ToListAsync();
+            }
+            
+            return View(subjects);
         }
 
         // GET: Students/Details/5

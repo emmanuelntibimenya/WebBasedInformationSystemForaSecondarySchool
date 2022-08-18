@@ -16,3 +16,17 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.nav-item .nav-link{
+    color: #fff !important;
+}
+
+.nav-item.active, .nav-item:hover{
+    background-color: #fff;
+    color: forestgreen !important;
+}
+
+.nav-item.active .nav-link, .nav-item .nav-link:hover {
+    background-color: #fff;
+    color: forestgreen !important;
+}

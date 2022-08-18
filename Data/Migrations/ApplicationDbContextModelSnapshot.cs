@@ -202,6 +202,26 @@ namespace SchoolManagementSystem.Data.Migrations
                     b.ToTable("Attendance");
                 });
 
+            modelBuilder.Entity("SchoolManagementSystem.Models.Diary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Diaries");
+                });
+
             modelBuilder.Entity("SchoolManagementSystem.Models.LearnerProfile", b =>
                 {
                     b.Property<int>("ID")

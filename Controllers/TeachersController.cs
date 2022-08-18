@@ -34,8 +34,16 @@ namespace SchoolManagementSystem.Controllers
             var subjectUsers = subject == null ? new List<UserSubject>() : await _context.UserSubjects.Include(a => a.User).Where(x => x.SubjectId == subjectId && studentIds.Contains(x.UserId)).ToListAsync();
 
             ViewBag.Subjects = await _context.Subject.ToListAsync();
-            ViewBag.UserFullName = currentUser.FullName;
-
+            bool isPrincipal = await _userManager.IsInRoleAsync(currentUser, "Principal");
+            if (isPrincipal)
+            {
+                ViewBag.Heading = string.Empty;
+            }
+            else
+            {
+                ViewBag.Heading = $"Class {currentUser.FullName}";
+            }
+            
             return View(subjectUsers);
         }
 

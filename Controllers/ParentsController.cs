@@ -29,10 +29,21 @@ namespace SchoolManagementSystem.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            ViewBag.User = user.FullName;
-            var childrenIds = await _context.Users.Where(x => x.ParentId == user.Id).Select(x => x.Id).ToListAsync();
-            var userSubjects = await _context.UserSubjects.Where(x => childrenIds.Contains(x.UserId)).Include(u => u.Subject).Include(x => x.User).OrderBy(x => x.UserId).ToListAsync();
-            return View(userSubjects);
+            bool isPrincipal = await _userManager.IsInRoleAsync(user, "Principal");
+            List<UserSubject> subjects = new List<UserSubject>();
+            if (isPrincipal)
+            {
+                ViewBag.Heading = string.Empty;
+                subjects = await _context.UserSubjects.Include(u => u.Subject).Include(x => x.User).OrderBy(x => x.UserId).ToListAsync();
+            }
+            else
+            {
+                ViewBag.Heading = $"{user.FullName}'s Childrens' Academic Records";
+                var childrenIds = await _context.Users.Where(x => x.ParentId == user.Id).Select(x => x.Id).ToListAsync();
+                subjects = await _context.UserSubjects.Where(x => childrenIds.Contains(x.UserId)).Include(u => u.Subject).Include(x => x.User).OrderBy(x => x.UserId).ToListAsync();
+            }
+            
+            return View(subjects);
         }
 
         // GET: Parent/Details/5

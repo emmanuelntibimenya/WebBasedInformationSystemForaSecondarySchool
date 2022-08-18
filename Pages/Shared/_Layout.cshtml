@@ -13,33 +13,33 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="background-color:forestgreen !important;">
             <div class="container">
-                <a class="navbar-brand" style="color: yellow !important;" asp-area="" asp-page="/Index"><img src="~/images/logo1.jpeg" width="150" /></a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index"><img src="~/images/logo1.jpeg" width="150" /></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link" style="color: #fff !important;" asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i></a>
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"] != null && ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : "")">
+                            <a class="nav-link"  asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i></a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" style="color: #fff !important;" asp-controller="Accounts" asp-action="Index">ACCOUNTS</a>
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"] != null && ViewContext.RouteData.Values["controller"].ToString() == "Accounts" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Accounts" asp-action="Index">ACCOUNTS</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" style="color: #fff !important;" asp-area="" asp-page="/Index">PRINCIPAL</a>
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"] != null && ViewContext.RouteData.Values["controller"].ToString() == "Principal" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Principal" asp-action="Index">PRINCIPAL</a>
                         </li>
-                         <li class="nav-item">
-                            <a class="nav-link" style="color: #fff !important;" asp-controller="Secretaries" asp-action="Index">SECRETARY</a>
+                         <li class="nav-item @(ViewContext.RouteData.Values["controller"] != null && ViewContext.RouteData.Values["controller"].ToString() == "Secretaries" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Secretaries" asp-action="Index">SECRETARY</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" style="color: #fff !important;" asp-controller="Teachers" asp-action="Index">TEACHERS</a>
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"] != null && ViewContext.RouteData.Values["controller"].ToString() == "Teachers" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Teachers" asp-action="Index">TEACHERS</a>
                         </li>
-                         <li class="nav-item">
-                            <a  style="color: #fff !important;"class="nav-link text-dark" asp-controller="Students" asp-action="Index">STUDENTS</a>
+                         <li class="nav-item @(ViewContext.RouteData.Values["controller"] != null && ViewContext.RouteData.Values["controller"].ToString() == "Students" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Students" asp-action="Index">STUDENTS</a>
                         </li>
-                         <li class="nav-item">
-                            <a  style="color: #fff !important;"class="nav-link text-dark" asp-controller="Parents" asp-action="Index">PARENTS</a>
+                         <li class="nav-item  @(ViewContext.RouteData.Values["controller"] != null && ViewContext.RouteData.Values["controller"].ToString() == "Parents" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Parents" asp-action="Index">PARENTS</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
